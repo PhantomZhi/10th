@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy 10th Monthsary, Love</title>
+  <style>
+  :root {
+    --bg: #6b0b43; /* darker pink */
+    --bg-darker: #3a0826;
+    --bg-deep: #1a0013;
+    --accent: #ffd1e6;
+    --accent-2: #a20f5f;
+    --text: #fff7fb;
+    --shadow: rgba(0,0,0,0.25);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: var(--text);
+    background: radial-gradient(1400px 900px at 50% -20%, var(--accent-2) 0%, var(--bg-darker) 42%, var(--bg-deep) 100%);
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .card {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 20px 50px var(--shadow);
+    border-radius: 16px;
+    padding: 28px 24px;
+    max-width: 820px;
+    width: min(92%, 820px);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  h1, h2, h3 { margin: 0 0 12px; }
+  h1 { font-weight: 800; letter-spacing: 0.4px; }
+  p { margin: 8px 0 0; line-height: 1.6; }
+  .btn {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 12px 22px;
+    background: linear-gradient(135deg, #ff99c8, #ff6fa3);
+    border: none;
+    color: white;
+    font-weight: 700;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(255, 111, 163, 0.35);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 14px 28px rgba(255, 111, 163, 0.5); }
+  .btn:active { transform: translateY(0); }
+  
+  /* Touch-friendly improvements */
+  @media (hover: none) and (pointer: coarse) {
+    .btn:hover { transform: none; box-shadow: 0 10px 24px rgba(255, 111, 163, 0.35); }
+    .email-card:hover { transform: none; box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
+    .btn:active { transform: scale(0.98); }
+    .email-card:active { transform: scale(0.98); }
+  }
+
+  /* Stage visibility */
+  .stage { display: none; }
+  .stage.active { display: block; }
+
+  /* Intro love letter */
+  .lead { font-size: 18px; opacity: 0.95; }
+  #stage-intro .btn { opacity: 0; pointer-events: none; transition: opacity 500ms ease, transform 500ms ease; }
+  #stage-intro .btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+  .letter {
+    display: flex; align-items: center; justify-content: center;
+  }
+  .paper {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.88));
+    color: #3a0e22;
+    border-radius: 14px;
+    padding: 22px 20px;
+    width: min(92vw, 760px);
+    margin: 0 auto 10px;
+    text-align: left;
+    border: 1px solid rgba(255,255,255,0.65);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35), inset 0 2px 0 rgba(255,255,255,0.6);
+  }
+  .paper h2 { color: #7a1141; margin-bottom: 10px; }
+  .ink { font-family: "Georgia", serif; font-size: 18px; line-height: 1.8; color: #3a0e22; min-height: 160px; }
+  .caret { display: inline-block; width: 10px; }
+  .caret::after { content: "|"; color: #a20f5f; animation: blink 1s steps(2, start) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Slideshow */
+  .slideshow {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: min(62vh, 520px);
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 0 auto;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .slide-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transform: scale(1.08);
+    opacity: 0;
+    transition: opacity 4s ease, transform 9s ease;
+  }
+  .slide-img.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .slideshow-title { margin-bottom: 10px; font-weight: 800; letter-spacing: 0.4px; }
+  .slideshow.appear { animation: popIn 700ms ease both; }
+  @keyframes popIn { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .fadeout {
+    position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none;
+    transition: opacity 5s ease;
+  }
+  .fadeout.show { opacity: 1; }
+  .fadeout-fixed { position: fixed; inset: 0; background: #000; opacity: 0; pointer-events: none; transition: opacity 5s ease; z-index: 1000; }
+  .fadeout-fixed.show { opacity: 1; }
+
+  /* Message sequence */
+  .emails-title { margin-bottom: 10px; }
+  .emails-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+  }
+  
+  /* Mobile scrollable messages */
+  .messages-container {
+    max-height: none;
+    overflow: visible;
+  }
+  /* Simple expanding mail card */
+  .emails-grid { align-items: start; }
+  .email-card { cursor: pointer; background: #ffffff; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; box-shadow: 0 6px 14px rgba(0,0,0,0.12); overflow: hidden; transition: transform 140ms ease, box-shadow 140ms ease; }
+  .email-card:hover { transform: translateY(-1px); box-shadow: 0 10px 20px rgba(0,0,0,0.16); }
+  .email-inner { padding: 16px 16px 12px; }
+  .email-subject { font-weight: 700; margin-bottom: 6px; letter-spacing: 0.2px; color: #7a1141; text-align: left; }
+  .email-body { max-height: 0; opacity: 0; overflow: hidden; text-align: left; line-height: 1.7; font-size: 16px; color: #381224; transition: max-height 320ms ease, opacity 280ms ease; }
+  .email-card.open .email-body { max-height: 600px; opacity: 1; }
+  #btn-emails-continue { margin-top: 14px; display: none; }
+  #btn-emails-continue.show { display: inline-block; }
+
+  /* Flower scene */
+  .flower-wrap {
+    position: relative;
+    width: min(92vw, 640px);
+    height: min(64vh, 520px);
+    margin: 0 auto;
+  }
+  .ground {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 80px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.18));
+    border-radius: 20px 20px 0 0;
+  }
+  .flower-svg { width: 100%; height: 100%; }
+  .stem {
+    transform-origin: 50% 100%;
+    transform: scaleY(0);
+    transition: transform 2800ms ease-in-out;
+    filter: drop-shadow(0 6px 18px rgba(0,0,0,0.25));
+  }
+  .stem.grow { transform: scaleY(1); }
+  .petal { opacity: 0; transform: scale(0.4); transform-origin: 50% 50%; transition: opacity 700ms ease, transform 700ms ease; }
+  .petal.visible { opacity: 1; transform: scale(1); }
+  .center { filter: drop-shadow(0 6px 14px rgba(0,0,0,0.25)); }
+  .flower-glow .petal, .flower-glow #center { filter: drop-shadow(0 0 18px rgba(255, 166, 201, 0.7)) drop-shadow(0 0 30px rgba(255, 166, 201, 0.5)); }
+  .final-note { margin-top: 16px; font-weight: 900; letter-spacing: 0.6px; opacity: 0; transform: translateY(10px); transition: opacity 700ms ease, transform 700ms ease; color: #ffe3f0; }
+  .final-note::before { content: ""; display: inline-block; vertical-align: middle; width: 8px; height: 8px; border-radius: 50%; background: #ff9bc4; margin-right: 8px; box-shadow: 0 0 10px rgba(255,155,196,0.6); }
+  .final-note.show { opacity: 1; transform: translateY(0); }
+
+  /* End sweet message */
+  .end-wrap { max-width: 820px; margin: 0 auto; text-align: center; }
+  .end-card {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 16px;
+    padding: 22px 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+  .end-title { font-weight: 800; margin-bottom: 10px; }
+  .end-text { line-height: 1.8; font-size: 18px; }
+
+
+  /* Lyrics stage */
+  .lyrics-wrap { max-width: 820px; margin: 0 auto; text-align: left; }
+  .lyrics-title { font-weight: 800; margin-bottom: 10px; }
+  .lyrics-box {
+    max-height: min(58vh, 460px);
+    overflow: auto;
+    padding: 16px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.15);
+  }
+  .lyrics-box p { margin: 0 0 10px; }
+  .lyric-line { margin: 6px 0; opacity: 0.6; transition: opacity 200ms ease; }
+  .lyric-current { opacity: 1; color: #ffd1e6; font-weight: 800; }
+
+  /* Floating hearts background */
+  .hearts { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+  .heart {
+    position: absolute;
+    width: 18px; height: 18px;
+    background: #ffb3d9;
+    transform: rotate(45deg);
+    border-radius: 4px;
+    opacity: 0.35;
+    animation: floatUp 9s linear infinite;
+  }
+  .heart:before, .heart:after {
+    content: ""; position: absolute; background: #ffb3d9; width: 18px; height: 18px; border-radius: 50%;
+  }
+  .heart:before { left: -9px; top: 0; }
+  .heart:after { left: 0; top: -9px; }
+  @keyframes floatUp {
+    0% { transform: translateY(20vh) rotate(45deg) scale(0.8); }
+    100% { transform: translateY(-110vh) rotate(45deg) scale(1.2); }
+  }
+
+  /* Mobile responsive design */
+  @media (max-width: 768px) {
+    .card { 
+      padding: 20px 16px; 
+      margin: 10px;
+      max-width: calc(100% - 20px);
+    }
+    
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+    
+    .paper { 
+      padding: 18px 16px; 
+      width: 100%;
+    }
+    
+    .ink { 
+      font-size: 16px; 
+      min-height: 120px;
+    }
+    
+    .slideshow { 
+      height: 45vh; 
+      min-height: 280px;
+    }
+    
+    .emails-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    
+    .messages-container {
+      max-height: 60vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 8px;
+    }
+    
+    .messages-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    .messages-container::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+    }
+    
+    .messages-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+    }
+    
+    .messages-container::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+    
+    .email-card {
+      margin-bottom: 8px;
+    }
+    
+    .email-inner {
+      padding: 14px 12px 10px;
+    }
+    
+    .email-subject {
+      font-size: 16px;
+    }
+    
+    .email-body {
+      font-size: 15px;
+    }
+    
+    .flower-wrap {
+      width: 100%;
+      height: 50vh;
+      min-height: 300px;
+    }
+    
+    .end-card {
+      padding: 18px 16px;
+    }
+    
+    .end-text {
+      font-size: 16px;
+    }
+    
+    .btn {
+      padding: 14px 24px;
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .card { 
+      padding: 16px 12px; 
+      margin: 8px;
+      max-width: calc(100% - 16px);
+    }
+    
+    h1 { font-size: 22px; }
+    h2 { font-size: 18px; }
+    
+    .paper { 
+      padding: 16px 14px; 
+    }
+    
+    .ink { 
+      font-size: 15px; 
+      min-height: 100px;
+    }
+    
+    .slideshow { 
+      height: 40vh; 
+      min-height: 250px;
+    }
+    
+    .emails-grid {
+      gap: 10px;
+    }
+    
+    .messages-container {
+      max-height: 55vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 6px;
+    }
+    
+    .email-inner {
+      padding: 12px 10px 8px;
+    }
+    
+    .email-subject {
+      font-size: 15px;
+    }
+    
+    .email-body {
+      font-size: 14px;
+    }
+    
+    .flower-wrap {
+      height: 45vh;
+      min-height: 280px;
+    }
+    
+    .end-card {
+      padding: 16px 14px;
+    }
+    
+    .end-text {
+      font-size: 15px;
+    }
+    
+    .btn {
+      padding: 12px 20px;
+      font-size: 15px;
+    }
+    
+    .final-note {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .card { 
+      padding: 14px 10px; 
+      margin: 6px;
+      max-width: calc(100% - 12px);
+    }
+    
+    h1 { font-size: 20px; }
+    h2 { font-size: 16px; }
+    
+    .paper { 
+      padding: 14px 12px; 
+    }
+    
+    .ink { 
+      font-size: 14px; 
+      min-height: 90px;
+    }
+    
+    .slideshow { 
+      height: 35vh; 
+      min-height: 220px;
+    }
+    
+    .emails-grid {
+      gap: 8px;
+    }
+    
+    .messages-container {
+      max-height: 50vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 4px;
+    }
+    
+    .email-inner {
+      padding: 10px 8px 6px;
+    }
+    
+    .email-subject {
+      font-size: 14px;
+    }
+    
+    .email-body {
+      font-size: 13px;
+    }
+    
+    .flower-wrap {
+      height: 40vh;
+      min-height: 250px;
+    }
+    
+    .end-card {
+      padding: 14px 12px;
+    }
+    
+    .end-text {
+      font-size: 14px;
+    }
+    
+    .btn {
+      padding: 10px 18px;
+      font-size: 14px;
+    }
+    
+    .final-note {
+      font-size: 15px;
+    }
+  }
+
+  /* Landscape mobile optimization */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .card {
+      padding: 12px 16px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .slideshow {
+      height: 35vh;
+      min-height: 200px;
+    }
+    
+    .flower-wrap {
+      height: 40vh;
+      min-height: 200px;
+    }
+    
+    .paper {
+      padding: 12px 14px;
+    }
+    
+    .ink {
+      min-height: 80px;
+      font-size: 14px;
+    }
+  }
+  </style>
+</head>
+<body>
+  <div class="hearts" aria-hidden="true" id="hearts"></div>
+  <audio id="bgm" src="Your Love.mp3" preload="auto"></audio>
+  <div class="fadeout-fixed" id="fadeoutIntro"></div>
+
+  <div class="container">
+    <div class="card">
+      <!-- Stage 0: Start -->
+      <section class="stage active" id="stage-start">
+        <h1>Happy 10th Monthsary, My Love</h1>
+        <p class="lead">I have something for you.</p>
+        <button class="btn" id="btn-start">Begin</button>
+      </section>
+
+      <!-- Stage 1: First message (user reads) -->
+      <section class="stage" id="stage-intro">
+        <div class="letter">
+          <div class="paper">
+            <h2>To melody</h2>
+            <div class="ink"><span id="letterText"></span><span class="caret" id="caret"></span></div>
+          </div>
+        </div>
+        <button class="btn" id="btn-continue-intro">Continue</button>
+      </section>
+
+      <!-- Stage 2: Slideshow -->
+      <section class="stage" id="stage-slideshow">
+        <h2 class="slideshow-title">10 photos of us together<3</h2>
+        <div class="slideshow" id="slideshow">
+          <img id="slideA" class="slide-img" alt="Photo A">
+          <img id="slideB" class="slide-img" alt="Photo B">
+          <div class="fadeout" id="fadeout"></div>
+        </div>
+      </section>
+
+      <!-- Stage 3: Mails -->
+      <section class="stage" id="stage-messages">
+        <h2 class="emails-title">Open your 10 love mails</h2>
+        <div class="messages-container">
+          <div class="emails-grid" id="emailsGrid"></div>
+        </div>
+        <button class="btn" id="btn-emails-continue">See something grow</button>
+      </section>
+
+      <!-- Stage 4: Flower grows -->
+      <section class="stage" id="stage-flower">
+        <div class="flower-wrap">
+          <svg class="flower-svg" viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
+            <!-- Stem and leaves group will scale in to "sprout" -->
+            <g id="stemGroup" class="stem">
+              <path d="M300 460 C300 420 300 360 300 300 C300 240 300 180 300 120" stroke="#2e7d32" stroke-width="10" fill="none" stroke-linecap="round"/>
+              <path d="M300 320 C260 320 230 310 210 290 C235 300 260 300 280 290" fill="#2e7d32" opacity="0.9"/>
+              <path d="M300 260 C340 260 370 250 390 230 C365 240 340 240 320 230" fill="#2e7d32" opacity="0.9"/>
+            </g>
+            <!-- Petals will be appended here -->
+            <defs>
+              <radialGradient id="petalGrad" cx="50%" cy="50%" r="60%">
+                <stop offset="0%" stop-color="#ffd3e6"/>
+                <stop offset="60%" stop-color="#ff8bbd"/>
+                <stop offset="100%" stop-color="#ff5aa4"/>
+              </radialGradient>
+            </defs>
+            <g id="petals"></g>
+            <!-- Flower center -->
+            <circle id="center" class="center" cx="300" cy="100" r="18" fill="#ffd166" stroke="#ffb703" stroke-width="4"/>
+          </svg>
+          <div class="ground"></div>
+        </div>
+        <div class="final-note" id="final-note">Happy 10th monthsary, love. Forever yours.</div>
+      </section>
+
+      <!-- Stage 5: End Sweet Message -->
+      <section class="stage" id="stage-end">
+        <div class="end-wrap">
+          <div class="end-card">
+            <h2 class="end-title">For you, my love</h2>
+            <p class="end-text" id="endText"></p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    const startStage = document.getElementById('stage-start');
+    const introStage = document.getElementById('stage-intro');
+    const slideshowStage = document.getElementById('stage-slideshow');
+    const messagesStage = document.getElementById('stage-messages');
+    const flowerStage = document.getElementById('stage-flower');
+    const bgm = document.getElementById('bgm');
+
+    const btnStart = document.getElementById('btn-start');
+    const btnContinueIntro = document.getElementById('btn-continue-intro');
+    const letterTextEl = document.getElementById('letterText');
+    const caretEl = document.getElementById('caret');
+    const btnNextMsg = document.getElementById('btn-next-msg');
+
+    function showStage(stageEl) {
+      for (const el of document.querySelectorAll('.stage')) {
+        el.classList.remove('active');
+      }
+      stageEl.classList.add('active');
+    }
+
+    // Floating hearts background
+    const hearts = document.getElementById('hearts');
+    function spawnHeart() {
+      const h = document.createElement('div');
+      h.className = 'heart';
+      const size = 12 + Math.random() * 16;
+      h.style.width = size + 'px';
+      h.style.height = size + 'px';
+      h.style.left = Math.random() * 100 + 'vw';
+      h.style.bottom = '-20px';
+      h.style.animationDuration = 7 + Math.random() * 6 + 's';
+      h.style.opacity = 0.25 + Math.random() * 0.35;
+      hearts.appendChild(h);
+      setTimeout(() => h.remove(), 15000);
+    }
+    const heartInterval = setInterval(spawnHeart, 800);
+    for (let i = 0; i < 12; i++) spawnHeart();
+
+
+    // Stage 1: Start → Intro message (start music here from the beginning)
+    btnStart.addEventListener('click', async () => {
+      showStage(introStage);
+      startTypewriter();
+      try {
+        bgm.pause();
+        bgm.currentTime = 0;
+        bgm.volume = 0.9;
+        await bgm.play();
+      } catch (e) {
+        // If autoplay is blocked, user can tap anywhere to resume audio.
+        document.body.addEventListener('click', () => bgm.play(), { once: true });
+        document.body.addEventListener('touchstart', () => bgm.play(), { once: true });
+      }
+    });
+
+    // Stage 2: After letter finishes, fade out then proceed to slideshow
+    btnContinueIntro.addEventListener('click', async () => {
+      const fadeIntro = document.getElementById('fadeoutIntro');
+      if (fadeIntro) fadeIntro.classList.add('show');
+      setTimeout(() => {
+        showStage(slideshowStage);
+        startSlideshow();
+        if (fadeIntro) fadeIntro.classList.remove('show');
+      }, 5000);
+    });
+
+    // Typewriter love letter
+    const letterMessage = [
+      "Dear love, Happy 10th Monthsary po sa ating dalawa, ",
+      "these past few days naging busy ako sa thesis at halos hindi tayo nakakapag usap.. ",
+      "kaya ginawa ko ito para sayo since hindi ako nakagawa ng letter for you ",
+      "and para maiba naman.. sana magustohan mo. ",
+      "\n\nI LOVE YOU SO MUCH LOVE"
+    ].join("");
+    function startTypewriter() {
+      letterTextEl.textContent = '';
+      btnContinueIntro.classList.remove('show');
+      let i = 0;
+      const speed = 60; // ms per char (slower)
+      function type() {
+        if (i < letterMessage.length) {
+          const ch = letterMessage[i];
+          if (ch === '\n') {
+            letterTextEl.appendChild(document.createElement('br'));
+          } else {
+            letterTextEl.textContent += ch;
+          }
+          i++;
+          setTimeout(type, ch === '.' ? speed * 10 : speed);
+        } else {
+          // reveal button
+          btnContinueIntro.classList.add('show');
+        }
+      }
+      type();
+    }
+
+    // Slideshow of 10 photos
+    const slideshowEl = document.getElementById('slideshow');
+    const slideA = document.getElementById('slideA');
+    const slideB = document.getElementById('slideB');
+    const slidePaths = Array.from({ length: 10 }, (_, i) => `photos/photo${i+1}.jpg`);
+    let slideIndex = 0;
+    function startSlideshow() {
+      slideIndex = 0;
+      // prepare two-image crossfade
+      slideA.src = slidePaths[0];
+      slideA.classList.add('show');
+      slideB.classList.remove('show');
+      slideshowEl.classList.add('appear');
+      const displayMs = 5000; // 5s visible
+      const transitionMs = 4000; // 4s crossfade
+      const cycleMs = displayMs + transitionMs;
+
+      let useA = true;
+      const timer = setInterval(() => {
+        slideIndex = (slideIndex + 1) % slidePaths.length;
+        const nextSrc = slidePaths[slideIndex];
+        if (useA) {
+          slideB.src = nextSrc;
+          // crossfade: A -> B
+          slideB.classList.add('show');
+          slideA.classList.remove('show');
+        } else {
+          slideA.src = nextSrc;
+          // crossfade: B -> A
+          slideA.classList.add('show');
+          slideB.classList.remove('show');
+        }
+        useA = !useA;
+        // After the full cycle, if we reached the end once, move on to messages
+        if (slideIndex === slidePaths.length - 1) {
+          setTimeout(() => {
+            clearInterval(timer);
+            showStage(messagesStage);
+            startMessages();
+          }, cycleMs);
+        }
+      }, cycleMs);
+    }
+
+    // 10 love emails (click to reveal)
+    const emailsGrid = document.getElementById('emailsGrid');
+    const btnEmailsContinue = document.getElementById('btn-emails-continue');
+    const emails = [
+      { subject: 'Mail 1', body: 'Thank you for being their with me even though i have nothing..' },
+      { subject: 'Mail 2', body: 'Thank you for being the one who believes me when i doubted myself..' },
+      { subject: 'Mail 3', body: 'Even when we have a fight, you still chose to stay' },
+      { subject: 'Mail 4', body: 'I love listening to your stories and seeing you smile' },
+      { subject: 'Mail 5', body: "My whole day is not complete when i'm not talking to you" },
+      { subject: 'Mail 6', body: "I want to say sorry when i'm not talking to you after a fight" },
+      { subject: 'Mail 7', body: 'You are the one who brings joy to my family.' },
+      { subject: 'Mail 8', body: 'I hope we can achieve our goals together' },
+      { subject: 'Mail 9', body: "I always love you even when i don't say it" },
+      { subject: 'Mail 10', body: 'I want to grow with you, my love' }
+    ];
+    function startMessages() {
+      emailsGrid.innerHTML = '';
+      let opened = 0;
+      emails.forEach((mail, idx) => {
+        const card = document.createElement('div');
+        card.className = 'email-card';
+        card.innerHTML = `<div class="email-inner">
+                            <div class="email-subject">${mail.subject}</div>
+                            <div class="email-body">${mail.body}</div>
+                          </div>`;
+        // Add both click and touch support for mobile
+        const openCard = () => {
+          if (!card.classList.contains('open')) {
+            card.classList.add('open');
+            // Ensure opened card grows without overlapping siblings
+            card.style.alignSelf = 'start';
+            opened++;
+            
+            // Auto-scroll to opened card on mobile
+            setTimeout(() => {
+              if (window.innerWidth <= 768) {
+                const messagesContainer = document.querySelector('.messages-container');
+                if (messagesContainer) {
+                  const cardRect = card.getBoundingClientRect();
+                  const containerRect = messagesContainer.getBoundingClientRect();
+                  const scrollTop = messagesContainer.scrollTop;
+                  const cardTop = cardRect.top - containerRect.top + scrollTop;
+                  
+                  messagesContainer.scrollTo({
+                    top: cardTop - 20,
+                    behavior: 'smooth'
+                  });
+                }
+              }
+            }, 100);
+            
+            if (opened === emails.length) {
+              btnEmailsContinue.classList.add('show');
+            }
+          }
+        };
+        
+        card.addEventListener('click', openCard);
+        card.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          openCard();
+        });
+        emailsGrid.appendChild(card);
+      });
+      btnEmailsContinue.classList.remove('show');
+    }
+    btnEmailsContinue.addEventListener('click', () => {
+      showStage(flowerStage);
+      startFlower();
+    });
+
+    // Flower animation: sprout then 10 petals, one per second
+    const petalsGroup = document.getElementById('petals');
+    const stemGroup = document.getElementById('stemGroup');
+    const finalNote = document.getElementById('final-note');
+    function startFlower() {
+      // Sprout the stem (slower)
+      requestAnimationFrame(() => stemGroup.classList.add('grow'));
+      // After stem grows, add petals 1.2s per petal
+      setTimeout(() => {
+        createPetals(10);
+        revealPetalsSequentially(10, 1200, () => {
+          // subtle glow when completed
+          const svg = stemGroup.closest('svg');
+          if (svg) svg.classList.add('flower-glow');
+          setTimeout(() => { if (svg) svg.classList.remove('flower-glow'); }, 1600);
+          finalNote.classList.add('show');
+          // Fade to sweet message and hold until song ends
+          setTimeout(() => {
+            const fadeIntro = document.getElementById('fadeoutIntro');
+            if (fadeIntro) fadeIntro.classList.add('show');
+            setTimeout(() => {
+              showStage(document.getElementById('stage-end'));
+              if (fadeIntro) fadeIntro.classList.remove('show');
+              renderEndMessage();
+              // When music ends, softly pulse the card
+              bgm.addEventListener('ended', () => {
+                const card = document.querySelector('#stage-end .end-card');
+                if (card) card.style.boxShadow = '0 0 0 0 rgba(255,255,255,0.0)';
+              }, { once: true });
+            }, 5000);
+          }, 1800);
+        });
+      }, 3000);
+    }
+    function createPetals(count) {
+      petalsGroup.innerHTML = '';
+      const cx = 300, cy = 100; // center position near top of stem
+      const radius = 62;
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2 - Math.PI / 2;
+        const px = cx + Math.cos(angle) * radius;
+        const py = cy + Math.sin(angle) * radius;
+        const petal = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        petal.setAttribute('cx', String(px));
+        petal.setAttribute('cy', String(py));
+        petal.setAttribute('rx', '22');
+        petal.setAttribute('ry', '36');
+        petal.setAttribute('fill', 'url(#petalGrad)');
+        petal.setAttribute('stroke', '#ff6ba8');
+        petal.setAttribute('stroke-width', '2');
+        petal.setAttribute('class', 'petal');
+        const deg = (angle * 180) / Math.PI + 90;
+        petal.setAttribute('transform', `rotate(${deg} ${px} ${py})`);
+        petalsGroup.appendChild(petal);
+      }
+    }
+    // End message
+    function renderEndMessage() {
+      const endText = document.getElementById('endText');
+      if (!endText) return;
+      endText.innerHTML = `Thank you for being my calm, my joy, and my favorite story.<br>
+      I’m so grateful for you—today and always. Happy 10th monthsary, love.<br>
+      As this song plays out, know that my heart is always choosing you.`;
+    }
+    // (Lyrics stage removed as requested)
+    function revealPetalsSequentially(count, intervalMs, onDone) {
+      const petals = Array.from(petalsGroup.querySelectorAll('.petal'));
+      let idx = 0;
+      const timer = setInterval(() => {
+        if (idx < petals.length) {
+          petals[idx].classList.add('visible');
+          idx++;
+        } else {
+          clearInterval(timer);
+          if (onDone) onDone();
+        }
+      }, intervalMs);
+    }
+  })();
+  </script>
+</body>
+</html>
